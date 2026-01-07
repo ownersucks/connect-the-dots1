@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connect The Dots</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0e0e0e;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 22px;
+      letter-spacing: 2px;
+      color: #f2f2f2;
+    }
+    svg { width: 100vw; height: 100vh; }
+    .dot {
+      fill: #ff4d6d;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .dot:hover {
+      filter: drop-shadow(0 0 8px #ff4d6d);
+    }
+    .dot.active {
+      filter: drop-shadow(0 0 14px #ff4d6d);
+    }
+    .dot.wrong {
+      animation: shake 0.4s;
+      fill: #777;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-3px); }
+      100% { transform: translateX(0); }
+    }
+    .line {
+      stroke: #ff4d6d;
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .word {
+      font-size: 18px;
+      fill: #ffffff;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .word.show { opacity: 1; }
+    #popup {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    #popup div {
+      background: #151515;
+      padding: 40px 60px;
+      font-size: 24px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      color: #ff4d6d;
+    }
+  </style>
+</head>
+<body>
+
+<h1>CONNECT THE DOTS TO GET THE MESSAGE</h1>
+
+<svg id="canvas" viewBox="0 0 1400 600">
+  <path id="path" class="line" />
+
+  <!-- Words (hidden initially) -->
+  <text x="70" y="120" class="word">If</text>
+  <text x="70" y="260" class="word">you</text>
+  <text x="180" y="260" class="word">connect</text>
+  <text x="280" y="210" class="word">the</text>
+  <text x="410" y="260" class="word">dots,</text>
+  <text x="540" y="240" class="word">you</text>
+  <text x="640" y="400" class="word">will</text>
+  <text x="720" y="230" class="word">know</text>
+  <text x="830" y="260" class="word">how</text>
+  <text x="930" y="270" class="word">much</text>
+  <text x="1050" y="300" class="word">I</text>
+  <text x="1130" y="300" class="word">love</text>
+  <text x="1280" y="290" class="word">you</text>
+
+  <!-- EXACT 14 DOTS matching reference image flow -->
+  <!-- Left vertical "if" -->
+  <circle class="dot" cx="90" cy="80" r="6" />   <!-- 1 -->
+  <circle class="dot" cx="90" cy="230" r="6" />  <!-- 2 -->
+
+  <!-- connect -->
+  <circle class="dot" cx="190" cy="230" r="6" /> <!-- 3 -->
+
+  <!-- the (curve) -->
+  <circle class="dot" cx="300" cy="180" r="6" /> <!-- 4 -->
+
+  <!-- dots -->
+  <circle class="dot" cx="430" cy="230" r="6" /> <!-- 6 -->
+
+  <!-- you / will dip -->
+  <circle class="dot" cx="550" cy="260" r="6" /> <!-- 7 -->
+  <circle class="dot" cx="650" cy="360" r="6" /> <!-- 8 -->
+
+  <!-- know -->
+  <circle class="dot" cx="750" cy="260" r="6" /> <!-- 9 -->
+
+  <!-- how / box -->
+  <circle class="dot" cx="850" cy="230" r="6" /> <!-- 10 -->
+  <circle class="dot" cx="950" cy="230" r="6" /> <!-- 11 -->
+
+  <!-- you -->
+  <circle class="dot" cx="1050" cy="260" r="6" /> <!-- 12 -->
+
+  <!-- love -->
+  <circle class="dot" cx="1150" cy="330" r="6" /> <!-- 13 -->
+
+  <!-- final you -->
+  <circle class="dot" cx="1280" cy="260" r="6" /> <!-- 14 -->
+</svg>
+
+<div id="popup"><div>CONGRATULATIONS YOU ARE LOVEd:3 ❤️</div></div>
+
+<script>
+  const dots = document.querySelectorAll('.dot');
+  const words = document.querySelectorAll('.word');
+  const path = document.getElementById('path');
+  const popup = document.getElementById('popup');
+  let index = 0;
+  let d = '';
+popup.addEventListener('pointerdown', () => {
+  popup.style.display = 'none';
+});
+
+
+  dots.forEach((dot, i) => {
+    dot.addEventListener('pointerdown', () => {
+      if (i === index) {
+        dot.classList.add('active');
+        const x = dot.getAttribute('cx');
+        const y = dot.getAttribute('cy');
+        d += index === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`;
+        path.setAttribute('d', d);
+        words[index].classList.add('show');
+        index++;
+        if (index === dots.length) {
+          setTimeout(() => popup.style.display = 'flex', 700);
+        }
+      } else {
+        dot.classList.add('wrong');
+        setTimeout(() => dot.classList.remove('wrong'), 400);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
